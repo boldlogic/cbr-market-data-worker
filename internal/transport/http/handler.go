@@ -1,0 +1,12 @@
+package httpserver
+
+import (
+	v1 "github.com/boldlogic/cbr-market-data-worker/internal/transport/http/v1"
+	"github.com/sirupsen/logrus"
+)
+
+type Handler = v1.Handler
+
+func NewHandler(logger logrus.FieldLogger) *v1.Handler {
+	return v1.NewHandler(logger)
+}
