@@ -4,9 +4,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 
+	"github.com/boldlogic/cbr-market-data-worker/internal/models"
 	"golang.org/x/net/html/charset"
 )
 
@@ -47,6 +50,23 @@ func (c *Client) GetCbrCurrencies(ctx context.Context, req *http.Request) error 
 		return fmt.Errorf("Не удалось получить справочник валют: %w", err)
 	}
 	c.log.Infof("%s", val)
-
+	currencies := make([]models.Currency, 0, len(val.Item))
+	for _, item := range val.Item {
+		currencies = append(currencies, models.Currency{
+			CbCode:      item.Id,
+			ISOCharCode: strings.TrimSpace(item.ISOCharCode),
+			Name:        strings.TrimSpace(item.Name),
+			LatName:     (item.EngName),
+			Nominal:     item.Nominal,
+			ParentCode:  strings.TrimSpace(item.ParentCode),
+			ISOCode:     item.ISONumCode,
+		})
+	}
+	errs := c.storage.SaveCurrencies(currencies)
+	if len(errs) > 0 {
+		if err := errors.Join(errs...); err != nil {
+			return fmt.Errorf("%w", err)
+		}
+	}
 	return nil
 }

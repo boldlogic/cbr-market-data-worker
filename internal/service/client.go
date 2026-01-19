@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/boldlogic/cbr-market-data-worker/internal/config"
+	"github.com/boldlogic/cbr-market-data-worker/internal/storage"
 	"github.com/sirupsen/logrus"
 )
 
@@ -14,6 +15,7 @@ type Client struct {
 	client          *http.Client
 	log             logrus.FieldLogger
 	RequestRegistry map[RequestType]Endpoint
+	storage         *storage.Storage
 }
 
 type Response struct {
@@ -22,7 +24,7 @@ type Response struct {
 	Body       []byte
 }
 
-func NewClient(cfg config.ClientConfig, log logrus.FieldLogger) *Client {
+func NewClient(cfg config.ClientConfig, log logrus.FieldLogger, storage *storage.Storage) *Client {
 	registry := make(map[RequestType]Endpoint, len(cfg.Endpoints))
 
 	for _, ep := range cfg.Endpoints {
@@ -39,6 +41,7 @@ func NewClient(cfg config.ClientConfig, log logrus.FieldLogger) *Client {
 		client:          &http.Client{},
 		log:             log,
 		RequestRegistry: registry,
+		storage:         storage,
 	}
 }
 

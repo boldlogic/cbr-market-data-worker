@@ -11,6 +11,7 @@ import (
 
 	"github.com/boldlogic/cbr-market-data-worker/internal/config"
 	"github.com/boldlogic/cbr-market-data-worker/internal/service"
+	"github.com/boldlogic/cbr-market-data-worker/internal/storage"
 	httpserver "github.com/boldlogic/cbr-market-data-worker/internal/transport/http"
 	"github.com/boldlogic/cbr-market-data-worker/pkg/logger"
 	"github.com/sirupsen/logrus"
@@ -23,6 +24,7 @@ type Application struct {
 	errChan   chan error
 	wg        sync.WaitGroup
 	httpSrv   *httpserver.Server
+	storage   *storage.Storage
 }
 
 func New() *Application {
@@ -48,7 +50,19 @@ func (a *Application) Start(ctx context.Context) error {
 	a.Log = log
 	a.logCloser = logCloser
 
-	client := service.NewClient(a.cfg.Client, a.Log)
+	dsn := a.cfg.Db.GetDSN()
+	db, err := storage.NewStorage(dsn)
+	if err != nil {
+		defer a.Close()
+		return fmt.Errorf("%w", err)
+	}
+
+	err = db.Migrate()
+	if err != nil {
+		return fmt.Errorf("%w", err)
+	}
+
+	client := service.NewClient(a.cfg.Client, a.Log, db)
 
 	handler := httpserver.NewHandler(a.Log, *client)
 	router := httpserver.NewRouter(handler, a.Log, a.cfg)
