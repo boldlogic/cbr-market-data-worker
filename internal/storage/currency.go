@@ -39,3 +39,25 @@ func (st *Storage) SaveCurrencies(rows []models.Currency) []error {
 	return errs
 
 }
+
+func (st *Storage) GetCurrencies() ([]models.Currency, error) {
+	var result []models.Currency
+	err := st.db.Table("currencies c").Select("c.iso_code, c.iso_char_code,c.name, c.lat_name").Scan(&result).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (st *Storage) GetCurrency(charCode string) (models.Currency, error) {
+	var result models.Currency
+
+	err := st.db.Where("iso_char_code=?", charCode).First(&result).Error
+
+	if err != nil {
+
+		return models.Currency{}, err
+	}
+	return result, nil
+}

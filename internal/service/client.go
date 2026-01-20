@@ -15,7 +15,7 @@ type Client struct {
 	client          *http.Client
 	log             logrus.FieldLogger
 	RequestRegistry map[RequestType]Endpoint
-	storage         *storage.Storage
+	Storage         *storage.Storage
 }
 
 type Response struct {
@@ -41,7 +41,7 @@ func NewClient(cfg config.ClientConfig, log logrus.FieldLogger, storage *storage
 		client:          &http.Client{},
 		log:             log,
 		RequestRegistry: registry,
-		storage:         storage,
+		Storage:         storage,
 	}
 }
 

@@ -6,11 +6,6 @@ import (
 	"net/http"
 )
 
-type CbRequest struct {
-	Type string `json:"type"`
-	Uuid string `json:"uuid,omitempty"`
-}
-
 func (h *Handler) execRequest(w http.ResponseWriter, r *http.Request) {
 	h.log.Info("Получен запрос на выполнение операции")
 	ctx := r.Context()

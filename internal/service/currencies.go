@@ -62,7 +62,7 @@ func (c *Client) GetCbrCurrencies(ctx context.Context, req *http.Request) error 
 			ISOCode:     item.ISONumCode,
 		})
 	}
-	errs := c.storage.SaveCurrencies(currencies)
+	errs := c.Storage.SaveCurrencies(currencies)
 	if len(errs) > 0 {
 		if err := errors.Join(errs...); err != nil {
 			return fmt.Errorf("%w", err)

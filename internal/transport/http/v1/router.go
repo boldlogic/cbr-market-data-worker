@@ -15,6 +15,8 @@ type Router struct {
 func NewRouter(handler *Handler, log logrus.FieldLogger) *Router {
 	r := chi.NewRouter()
 	r.Post("/requests", handler.execRequest)
+	r.Get("/currencies", handler.GetCurrencies)
+	r.Get("/currencies/{code}", handler.GetCurrency)
 	return &Router{
 		Mux:     r,
 		Handler: handler,
