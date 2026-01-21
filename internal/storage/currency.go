@@ -19,7 +19,7 @@ func (st *Storage) saveCurrency(row *models.Currency) error {
 		Nominal:     row.Nominal,
 		ParentCode:  row.ParentCode,
 		ISOCode:     row.ISOCode,
-	}).FirstOrCreate(&row)
+	}).FirstOrCreate(row)
 	if result.Error != nil {
 		return fmt.Errorf("Currency. %v", result.Error)
 	}
@@ -29,8 +29,8 @@ func (st *Storage) saveCurrency(row *models.Currency) error {
 
 func (st *Storage) SaveCurrencies(rows []models.Currency) []error {
 	var errs []error
-	for _, row := range rows {
-		err := st.saveCurrency(&row)
+	for i := range rows {
+		err := st.saveCurrency(&rows[i])
 		if err != nil {
 			errs = append(errs, err)
 		}

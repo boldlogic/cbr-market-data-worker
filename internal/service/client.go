@@ -56,6 +56,11 @@ func (c *Client) Execute(ctx context.Context, reqType string) error {
 		if err != nil {
 			return err
 		}
+	} else if reqType == "CBR_CURRENCY_RATES" {
+		err = c.GetCurrencyRates(ctx, request)
+		if err != nil {
+			return err
+		}
 	}
 
 	c.log.Infof("Сформирован запрос %s по URL %s, заголовки: ", request.Method, request.URL, request.Header)
