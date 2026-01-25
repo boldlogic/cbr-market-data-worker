@@ -55,6 +55,10 @@ func ParseFxRatesXML(bdy []byte) ([]models.FxRate, error) {
 		if isoCode <= 0 {
 			continue //наверное надо будет потом логировать кривые валюты, но пока не критично
 		}
+		var basePerQuoteUnit float64
+		if item.VunitRate != 0 {
+			basePerQuoteUnit = float64(1 / item.VunitRate)
+		}
 		rates = append(rates, models.FxRate{
 			Date:             rateDate,
 			QuoteISOCode:     643,
@@ -62,7 +66,7 @@ func ParseFxRatesXML(bdy []byte) ([]models.FxRate, error) {
 			Nominal:          item.Nominal,
 			QuoteForNominal:  float64(item.Value),
 			QuotePerUnit:     float64(item.VunitRate),
-			BasePerQuoteUnit: float64(1 / item.VunitRate),
+			BasePerQuoteUnit: basePerQuoteUnit,
 		})
 	}
 	return rates, nil

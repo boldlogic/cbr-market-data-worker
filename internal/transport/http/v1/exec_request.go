@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"net/http"
+
+	"github.com/boldlogic/cbr-market-data-worker/internal/models"
 )
 
 func (h *Handler) execRequest(w http.ResponseWriter, r *http.Request) {
@@ -34,7 +36,25 @@ func (h *Handler) execRequest(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	err = h.Service.Executor(ctx, cb.Type)
+	var params = make(map[string]string)
+	if cb.CharCode != "" {
+		params["cbcode"] = cb.CharCode
+	}
+	if cb.DateFrom != "" {
+		params["datefrom"] = cb.DateFrom
+	}
+	if cb.DateTo != "" {
+		params["dateto"] = cb.DateTo
+	}
+	tsk := models.Task{
+		Type:     cb.Type,
+		Params:   params,
+		CharCode: cb.CharCode,
+		DateFrom: cb.DateFrom,
+		DateTo:   cb.DateTo,
+		Uuid:     cb.Uuid,
+	}
+	err = h.Service.ExecuteTask(ctx, tsk)
 	//h.log.Info(resp)
 
 	h.SendResponse(w, APIResponse{

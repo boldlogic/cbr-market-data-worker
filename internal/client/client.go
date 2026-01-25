@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/boldlogic/cbr-market-data-worker/internal/config"
@@ -63,11 +64,35 @@ func (c *Client) PrepareRequest(ctx context.Context, endpoint request_catalog.Re
 		return nil, fmt.Errorf("ошибка создания запроса: %w", err)
 	}
 
-	headers := make(http.Header)
 	for k, v := range endpoint.Headers {
-		headers.Add(k, v)
+		request.Header.Set(k, v)
 	}
-	request.Header = headers
+
+	return request, nil
+}
+
+func (c *Client) PrepareRequestWithParams(ctx context.Context, endpoint request_catalog.RequestPlan, reqParams map[string]string) (*http.Request, error) {
+
+	reqURL, err := url.Parse(endpoint.Url)
+	if err != nil {
+		return nil, err
+	}
+
+	query := reqURL.Query()
+	for key, value := range reqParams {
+		query.Set(key, value)
+	}
+	reqURL.RawQuery = query.Encode()
+
+	request, err := http.NewRequestWithContext(ctx, endpoint.Method, reqURL.String(), nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("ошибка создания запроса: %w", err)
+	}
+
+	for k, v := range endpoint.Headers {
+		request.Header.Set(k, v)
+	}
 
 	return request, nil
 }

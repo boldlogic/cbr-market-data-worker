@@ -13,7 +13,7 @@ func (c *Service) GetCbrCurrencies(ctx context.Context, bdy []byte) error {
 	if err != nil {
 		return err
 	}
-	errs := c.Storage.SaveCurrencies(currencies)
+	errs := c.CurrencyRepo.SaveCurrencies(currencies)
 	if len(errs) > 0 {
 		if err := errors.Join(errs...); err != nil {
 			return fmt.Errorf("%w", err)

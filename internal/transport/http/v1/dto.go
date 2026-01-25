@@ -1,7 +1,11 @@
 package v1
 
 type CbRequest struct {
-	Type string `json:"type"`
+	Type     string `json:"type"`
+	CharCode string `json:"code,omitempty"`
+	DateFrom string `json:"dateFrom,omitempty"`
+	DateTo   string `json:"dateTo,omitempty"`
+
 	Uuid string `json:"uuid,omitempty"`
 }
 

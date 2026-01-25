@@ -9,7 +9,7 @@ import (
 )
 
 func (h *Handler) GetCurrencies(w http.ResponseWriter, r *http.Request) {
-	currencies, err := h.Service.Storage.GetCurrencies()
+	currencies, err := h.Service.CurrencyRepo.GetCurrencies()
 	if err != nil {
 
 		if err == gorm.ErrRecordNotFound {
@@ -66,7 +66,7 @@ func (h *Handler) GetCurrency(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-	currency, err := h.Service.Storage.GetCurrency(code)
+	currency, err := h.Service.CurrencyRepo.GetCurrency(code)
 	if err != nil {
 
 		if err == gorm.ErrRecordNotFound {
