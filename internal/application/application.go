@@ -67,7 +67,7 @@ func (a *Application) Start(ctx context.Context) error {
 	httpClient := client.NewClient(a.cfg.Client)
 	registry := request_catalog.NewProvider(a.cfg.Client)
 
-	svc := service.NewService(httpClient, registry, db, db, a.Log)
+	svc := service.NewService(httpClient, registry, db, db, db, a.Log)
 
 	handler := httpserver.NewHandler(a.Log, *svc)
 	router := httpserver.NewRouter(handler, a.Log, a.cfg)

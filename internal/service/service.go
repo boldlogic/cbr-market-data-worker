@@ -11,20 +11,22 @@ type Service struct {
 	client   *client.Client
 	Provider *request_catalog.Provider
 	//Storage      *storage.Storage
-	log          logrus.FieldLogger
-	CurrencyRepo CurrencyRepository
-	fxRateRepo   FxRateRepository
+	log           logrus.FieldLogger
+	CurrencyRepo  CurrencyRepository
+	fxRateRepo    FxRateRepository
+	schedulerRepo SchedulerRepository
 }
 
-func NewService(cl *client.Client, registry *request_catalog.Provider, currencyRepo CurrencyRepository, fxRateRepo FxRateRepository, log logrus.FieldLogger) *Service {
+func NewService(cl *client.Client, registry *request_catalog.Provider, currencyRepo CurrencyRepository, fxRateRepo FxRateRepository, schedulerRepo SchedulerRepository, log logrus.FieldLogger) *Service {
 
 	return &Service{
 		client:   cl,
 		Provider: registry,
 		//Storage:      storage,
-		CurrencyRepo: currencyRepo,
-		fxRateRepo:   fxRateRepo,
-		log:          log,
+		CurrencyRepo:  currencyRepo,
+		fxRateRepo:    fxRateRepo,
+		schedulerRepo: schedulerRepo,
+		log:           log,
 	}
 }
 
@@ -36,4 +38,11 @@ type CurrencyRepository interface {
 
 type FxRateRepository interface {
 	SaveFxRates([]models.FxRate) []error
+}
+
+type SchedulerRepository interface {
+	GetAction(code string) (models.Action, error)
+	SaveAction(row *models.Action) error
+	GetTask(uuid string) (models.Task, error)
+	CreateTask(row *models.Task) error
 }

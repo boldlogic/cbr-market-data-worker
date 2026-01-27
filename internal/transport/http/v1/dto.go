@@ -26,3 +26,17 @@ type CurrencyDTO struct {
 	NameRu   string `json:"nameRu,omitempty"`
 	NameEn   string `json:"nameEn,omitempty"`
 }
+
+type TaskDTO struct {
+	Action string `json:"action"`
+	Uuid   string `json:"uuid,omitempty"`
+
+	Params Params `json:"params,omitempty"`
+	//ScheduledAt string `json:"scheduledAt,omitempty"`
+}
+
+type Params struct {
+	CcyCode  string `json:"ccyCode,omitempty"`
+	DateFrom string `json:"dateFrom,omitempty"`
+	DateTo   string `json:"dateTo,omitempty"`
+}
