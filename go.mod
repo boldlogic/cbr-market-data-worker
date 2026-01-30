@@ -1,4 +1,4 @@
-module github.com/boldlogic/cbr-market-data-worker
+module github.com/boldlogic/PortfolioLens
 
 go 1.24.2
 
